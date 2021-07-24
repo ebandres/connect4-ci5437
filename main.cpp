@@ -43,8 +43,8 @@ public:
 
 	void MakeMove(PlayerData activePlayer, int columnChoice) 
 	{
-		board[free_slots[columnChoice]][columnChoice] = activePlayer.playerPiece;
-		free_slots[columnChoice]--;
+		board[free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
+		free_slots[columnChoice - 1]--;
 	}
 
 	bool CheckDown(int columnChoice)

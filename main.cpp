@@ -169,13 +169,6 @@ void WinnerMessage ( PlayerData activePlayer )
 }
 
 
-int PlayerTurn( char board[][10], PlayerData activePlayer );
-void CheckDown ( char board[][10], PlayerData activePlayer, int columnChoice );
-void BoardPrint ( char board[][10] );
-int CheckWinner ( char board[][10], PlayerData activePlayer );
-int CheckDraw( char board[][10] );
-void WinnerMessage ( PlayerData activePlayer );
-
 int main()
 {
 	PlayerData playerOne, playerTwo;

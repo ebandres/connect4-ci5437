@@ -15,7 +15,7 @@ public:
 	static const int width = 7;
 	static const int height = 6;
 	char board[9][10];
-	int heights[width];
+	int free_slots[width] = {6, 6, 6, 6, 6, 6, 6};
 	unsigned int moves;
 
 	int PlayerTurn(PlayerData activePlayer)
@@ -41,10 +41,19 @@ public:
 		return columnChoice;
 	}
 
-	void CheckDown(PlayerData activePlayer, int columnChoice)
+	void MakeMove(PlayerData activePlayer, int columnChoice) 
+	{
+		board[free_slots[columnChoice]][columnChoice] = activePlayer.playerPiece;
+		free_slots[columnChoice]--;
+	}
+
+	bool CheckDown(int columnChoice)
 	{
 		// Chequea si existe una ficha debajo para apilar la siguiente.
-		int length;
+		return free_slots[columnChoice - 1] > 0;
+		
+		
+		/*int length;
 		int turn;
 
 		length = 6;
@@ -60,6 +69,7 @@ public:
 			else
 				--length;
 		} while (turn != 1);
+		*/
 	}
 
 	void BoardPrint(void)
@@ -202,7 +212,11 @@ int main()
 	{
 		// turno del primer jugador.
 		columnChoice = b.PlayerTurn(playerOne);
-		b.CheckDown(playerOne, columnChoice);
+		if (b.CheckDown(columnChoice))
+		{
+			b.MakeMove(playerOne, columnChoice);
+		}
+		
 		b.BoardPrint();
 		win = b.CheckWinner(playerOne);
 		if (win == 1)
@@ -213,7 +227,11 @@ int main()
 
 		// turno del segundo jugador.
 		columnChoice = b.PlayerTurn(playerTwo);
-		b.CheckDown(playerTwo, columnChoice);
+		if (b.CheckDown(columnChoice))
+		{
+			b.MakeMove(playerTwo, columnChoice);
+		}
+		
 		b.BoardPrint();
 		win = b.CheckWinner(playerTwo);
 		if (win == 1)

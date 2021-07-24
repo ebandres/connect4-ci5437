@@ -159,20 +159,17 @@ public:
 		return win;
 	}
 
-	int CheckDraw(void)
+	bool CheckDraw(void)
 	{
-		int full;
-		full = 0;
-
-		// recorre toda la tabla, si todas las posiciones son fichas
-		// asigna un valor al centinela para declarar el empate y salir.
-		for (int i = 1; i <= 7; ++i)
+		for (int i = 0; i < 7; i++)
 		{
-			if (board[1][i] != '*')
-				++full;
+			if (free_slots[i] > 0)
+			{
+				return false;
+			}
+			
 		}
-
-		return full;
+		return true;
 	}
 };
 
@@ -241,8 +238,7 @@ int main()
 		}
 
 		// comprondo si esta llena la tabla para salir.
-		full = b.CheckDraw();
-		if (full == 7)
+		if (b.CheckDraw())
 		{
 			cout << "Draw! Full Board" << endl;
 			break;

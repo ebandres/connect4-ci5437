@@ -1,3 +1,7 @@
+#include "class.hpp"
+
+using namespace std;
+
 int main()
 {
 	PlayerData playerOne, playerTwo;

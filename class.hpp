@@ -19,7 +19,7 @@ public:
 	unsigned int moves;
 
 	int PlayerTurn(PlayerData activePlayer);
-	void MakeMove(PlayerData activePlayer, int columnChoice);
+	state_t MakeMove(PlayerData activePlayer, int columnChoice);
 	bool CheckDown(int columnChoice);
 	void BoardPrint(void);
 	bool CheckWinner(PlayerData activePlayer);
@@ -49,10 +49,14 @@ int state_t::PlayerTurn(PlayerData activePlayer)
 	return columnChoice;
 }
 
-void state_t::MakeMove(PlayerData activePlayer, int columnChoice) 
+state_t state_t::MakeMove(PlayerData activePlayer, int columnChoice) 
 {
-	board[free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
-	free_slots[columnChoice - 1]--;
+	state_t s(*this);
+	s.board[free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
+	s.free_slots[columnChoice - 1]--;
+	s.moves++;
+
+	return s;
 }
 
 bool state_t::CheckDown(int columnChoice)

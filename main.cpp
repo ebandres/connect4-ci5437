@@ -6,6 +6,7 @@ int main()
 {
 	PlayerData playerOne, playerTwo;
 	state_t b;
+	state_t next_move;
 
 	int columnChoice;
 	int win;
@@ -33,11 +34,12 @@ int main()
 		columnChoice = b.PlayerTurn(playerOne);
 		if (b.CheckDown(columnChoice))
 		{
-			b.MakeMove(playerOne, columnChoice);
+			next_move = b.MakeMove(playerOne, columnChoice);
 		}
-		
+		cout << b.width*b.height+1 << endl;
+		next_move.BoardPrint();
 		b.BoardPrint();
-		if (b.CheckWinner(playerOne))
+		if (next_move.CheckWinner(playerOne))
 		{
 			WinnerMessage(playerOne);
 			break;

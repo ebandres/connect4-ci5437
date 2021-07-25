@@ -96,13 +96,11 @@ public:
 		cout << " 1234567 " << endl;
 	}
 
-	int CheckWinner(PlayerData activePlayer)
+	bool CheckWinner(PlayerData activePlayer)
 	{
 		char Piece;
-		int win;
 
 		Piece = activePlayer.playerPiece;
-		win = 0;
 
 		// recorre toda la matriz en busca de las
 		// 4 posibles combinaciones para activar
@@ -119,7 +117,7 @@ public:
 					board[i][ix - 2] == Piece &&
 					board[i][ix - 3] == Piece)
 				{
-					win = 1;
+					return true;
 				}
 
 				if (board[i][ix] == Piece &&
@@ -127,7 +125,7 @@ public:
 					board[i - 2][ix - 2] == Piece &&
 					board[i - 3][ix - 3] == Piece)
 				{
-					win = 1;
+					return true;
 				}
 
 				if (board[i][ix] == Piece &&
@@ -135,7 +133,7 @@ public:
 					board[i - 2][ix] == Piece &&
 					board[i - 3][ix] == Piece)
 				{
-					win = 1;
+					return true;
 				}
 
 				if (board[i][ix] == Piece &&
@@ -143,7 +141,7 @@ public:
 					board[i][ix + 2] == Piece &&
 					board[i][ix + 3] == Piece)
 				{
-					win = 1;
+					return true;
 				}
 
 				if (board[i][ix] == Piece &&
@@ -151,12 +149,12 @@ public:
 					board[i - 2][ix + 2] == Piece &&
 					board[i - 3][ix + 3] == Piece)
 				{
-					win = 1;
+					return true;
 				}
 			}
 		}
 
-		return win;
+		return false;
 	}
 
 	bool CheckDraw(void)
@@ -215,8 +213,7 @@ int main()
 		}
 		
 		b.BoardPrint();
-		win = b.CheckWinner(playerOne);
-		if (win == 1)
+		if (b.CheckWinner(playerOne))
 		{
 			WinnerMessage(playerOne);
 			break;
@@ -230,8 +227,7 @@ int main()
 		}
 		
 		b.BoardPrint();
-		win = b.CheckWinner(playerTwo);
-		if (win == 1)
+		if (b.CheckWinner(playerTwo))
 		{
 			WinnerMessage(playerTwo);
 			break;

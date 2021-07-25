@@ -1,3 +1,6 @@
+#ifndef CLASS_HPP
+#define CLASS_HPP
+
 #include <iostream>
 #include <cstring>
 #include <vector>
@@ -19,7 +22,7 @@ public:
 	static const int height = 6;
 	char board[9][10];
 	int free_slots[width] = {6, 6, 6, 6, 6, 6, 6};
-	unsigned int moves;
+	unsigned int moves = 0;
 
 	int PlayerTurn(PlayerData activePlayer);
 	state_t MakeMove(PlayerData activePlayer, int columnChoice);
@@ -246,3 +249,23 @@ bool Node::FullyExplored(void)
 {
 	return children.size() == state.GetPossibleMoves().size();
 }
+
+void FillBoard(state_t &state, string seq, PlayerData player1, PlayerData player2) 
+{
+PlayerData player;
+for(unsigned int i = 0; i < seq.size(); i++) {
+	int col = seq[i] - '1'; 
+	col++;
+	cout << col << endl;
+
+	if (state.moves % 2 == 0) {
+		player = player1;
+	} else {
+		player = player2;
+	}
+
+	state = state.MakeMove(player, col);
+}
+}
+
+#endif

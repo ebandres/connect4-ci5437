@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cstring>
+#include <vector>
+#include <experimental/random>
+
 using namespace std;
 
 // Estructura que almacena la data de los jugadores
@@ -20,10 +23,12 @@ public:
 
 	int PlayerTurn(PlayerData activePlayer);
 	state_t MakeMove(PlayerData activePlayer, int columnChoice);
+	state_t RandMove(PlayerData activePlayer);
 	bool CheckDown(int columnChoice);
 	void BoardPrint(void);
 	bool CheckWinner(PlayerData activePlayer);
 	bool CheckDraw(void);
+	vector<int> GetPossibleMoves(void);
 };
 
 int state_t::PlayerTurn(PlayerData activePlayer)
@@ -56,6 +61,22 @@ state_t state_t::MakeMove(PlayerData activePlayer, int columnChoice)
 	s.free_slots[columnChoice - 1]--;
 	s.moves++;
 
+	return s;
+}
+
+// Random Move for Default Policy in MCTS
+state_t state_t::RandMove(PlayerData activePlayer)
+{
+	state_t s(*this);
+	vector<int> pm = s.GetPossibleMoves();
+	int size = static_cast<int>(pm.size());
+
+	if (size > 0)
+	{
+		int col = experimental::randint(0, size - 1);
+		s = s.MakeMove(activePlayer, pm[col]);
+	}
+	
 	return s;
 }
 
@@ -159,9 +180,69 @@ bool state_t::CheckDraw(void)
 	}
 }
 
+vector<int> state_t::GetPossibleMoves(void)
+{
+	vector<int> possible_moves;
+	for (int i = 0; i < 7; i++)
+	{
+		if (free_slots[i] != 0)
+		{
+			possible_moves.push_back(i + 1);
+		}
+	}
+}
+
 void WinnerMessage(PlayerData activePlayer)
 {
 	// solo imprime un mensaje al ganador.
 	cout << endl
 		 << activePlayer.playerName << " Wins!" << endl;
+}
+
+class Node
+{
+public:
+	int visits = 1;
+	float reward = 0.0;
+	state_t state;
+	Node* parent;
+	vector<Node> children;
+	vector<int> children_move;
+
+	Node(state_t s);
+	Node(state_t s, Node *p);
+
+	void AddChild(state_t child, int col);
+	void Update(float r);
+	bool FullyExplored(void);
+
+};
+
+Node::Node(state_t s) 
+{
+	state = s;
+}
+
+Node::Node(state_t s, Node *p)
+{
+	state = s;
+	parent = p;
+}
+
+void Node::AddChild(state_t child, int col)
+{
+	Node new_child(child, this);
+	children.push_back(new_child);
+	children_move.push_back(col);
+}
+
+void Node::Update(float r)
+{
+	reward += r;
+	visits++;
+}
+
+bool Node::FullyExplored(void)
+{
+	return children.size() == state.GetPossibleMoves().size();
 }

@@ -22,6 +22,8 @@ class state_t
 public:
 	static const int width = 7;
 	static const int height = 6;
+	static const int min_score = -(width*height)/2 + 3;
+    static const int max_score = (width*height+1)/2 - 3;
 	char board[9][10];
 	int free_slots[width] = {6, 6, 6, 6, 6, 6, 6};
 	unsigned int moves = 0;
@@ -34,6 +36,9 @@ public:
 	bool CheckWinner(PlayerData activePlayer);
 	bool CheckDraw(void);
 	vector<int> GetPossibleMoves(void);
+	uint64_t bottom_mask(int col);
+	void bit_play(int col);
+	uint64_t key();
 };
 
 int state_t::PlayerTurn(PlayerData activePlayer)
@@ -195,6 +200,19 @@ vector<int> state_t::GetPossibleMoves(void)
 			possible_moves.push_back(i + 1);
 		}
 	}
+}
+
+uint64_t state_t::bottom_mask(int col) {
+    return UINT64_C(1) << col*(height+1);
+ }
+
+void state_t::bit_play(int col) {
+	current_position ^= mask;
+	mask |= mask + bottom_mask(col);
+}
+
+uint64_t state_t::key() {
+return current_position + mask;
 }
 
 void WinnerMessage(PlayerData activePlayer)

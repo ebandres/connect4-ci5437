@@ -12,16 +12,17 @@ using namespace std::chrono;
 
 unsigned expanded = 0;
 unsigned generated = 0;
+TranspositionTable TTable(8388593);
 
 vector<state_t> child_vector(state_t state, PlayerData player) {
     vector<state_t> movement;
     state_t new_state;
 
-    for (int i = 1; i <= 7; i++)
+    for (int i = 0; i < 7; i++)
     {
-        if (state.CheckDown(i))
+        if (state.CheckDown(columnOrder[i]))
         {
-            new_state = state.MakeMove(player, i);
+            new_state = state.MakeMove(player, columnOrder[i]);
             movement.push_back(new_state);
         }
     }
@@ -44,16 +45,25 @@ bool check_children(state_t state, PlayerData player) {
 int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData player1, PlayerData player2){
     
     //check_time(st);
-    int score, val;
+    int score;
     ++generated;
 
-    if (state.CheckDraw()) // DRAW
+    if (state.CheckDraw()) 
     {
         return 0;
     }
 
     if (check_children(state, player1)) {
         return (state.width*state.height+1 - state.moves)/2;
+    }
+
+    int max = (state.width*state.height-1 - state.moves)/2;	
+    if(int info = TTable.get(state.key()))
+    max = info + state.min_score - 1;
+
+    if(beta > max) {
+    beta = max;                     
+    if(alpha >= beta) return beta;  
     }
 
     // si no es estado terminal, expande
@@ -64,16 +74,14 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData
     
     for (state_t child : child_states) 
     {
-        val = -negamax_alphabeta(child, depth - 1, -beta, -alpha, player2, player1);
-        score = max(score,val);
-        alpha = max(alpha,val);
-        if (alpha >= beta)
-        {
-            break;
-        } 
+        score = -negamax_alphabeta(child, depth - 1, -beta, -alpha, player2, player1);
+        if(score >= beta) return score;  
+        if(score > alpha) alpha = score; 
     }
 
-    return score;
+    TTable.put(state.key(), alpha - state.min_score + 1);
+
+    return alpha;
 };
 
 // Monte Carlo Tree Search

@@ -24,10 +24,10 @@ int main()
 	strcpy(playerTwo.playerName, "PlayerTwo");
 	playerTwo.playerPiece = 'X';
 
-	FillBoard(b, "5455174361263362", playerOne, playerTwo);
+	FillBoard(b, "32751571231557", playerOne, playerTwo);
 	b.BoardPrint();
 
-	int value = negamax_alphabeta(b, 15, -200, 200, playerOne, playerTwo);
+	int value = negamax_alphabeta(b, 15, -1, 1, playerOne, playerTwo);
 	cout << value << endl;
 }
 	// centinelas de tablero.

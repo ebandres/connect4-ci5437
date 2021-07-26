@@ -29,6 +29,18 @@ vector<state_t> child_vector(state_t state, PlayerData player) {
     return movement;
 }
 
+bool check_children(state_t state, PlayerData player) {
+    vector<state_t> children = child_vector(state, player);
+
+    for (state_t child : children) {
+        if (child.CheckWinner(player)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData player1, PlayerData player2){
     
     //check_time(st);
@@ -40,7 +52,9 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData
         return 0;
     }
 
-
+    if (check_children(state, player1)) {
+        return (state.width*state.height+1 - state.moves)/2;
+    }
 
     // si no es estado terminal, expande
     ++expanded;
@@ -50,11 +64,6 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData
     
     for (state_t child : child_states) 
     {
-        if (child.CheckWinner(player1)) {
-            //child.BoardPrint();
-            return (state.width*state.height+1 - state.moves)/2;
-        }
-
         val = -negamax_alphabeta(child, depth - 1, -beta, -alpha, player2, player1);
         score = max(score,val);
         alpha = max(alpha,val);

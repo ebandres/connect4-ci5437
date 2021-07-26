@@ -15,6 +15,8 @@ struct PlayerData
 	char playerPiece;
 };
 
+static int columnOrder[] = {4,3,5,2,6,1,7};
+
 class state_t
 {
 public:
@@ -256,7 +258,6 @@ PlayerData player;
 for(unsigned int i = 0; i < seq.size(); i++) {
 	int col = seq[i] - '1'; 
 	col++;
-	cout << col << endl;
 
 	if (state.moves % 2 == 0) {
 		player = player1;

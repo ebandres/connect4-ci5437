@@ -1,9 +1,10 @@
 #ifndef TTABLE_HPP
 #define TTABLE_HPP
 
-#include<vector>
-#include<cstring>
-#include<cassert>
+#include <vector>
+#include <cstring>
+#include <cassert>
+#include <cstdint>
 
 /**
  * Transposition Table is a simple hash map with fixed storage size.

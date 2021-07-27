@@ -6,6 +6,7 @@
 #include <cmath>
 #include <experimental/random>
 #include "class.hpp"
+#include "ttable.hpp"
 
 using namespace std;
 using namespace std::chrono;
@@ -42,7 +43,7 @@ bool check_children(state_t state, PlayerData player) {
     return false;
 }
 
-int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData player1, PlayerData player2){
+int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  Players players, int turn){
     
     //check_time(st);
     int score;
@@ -53,7 +54,7 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData
         return 0;
     }
 
-    if (check_children(state, player1)) {
+    if (check_children(state, players.turn(turn))) {
         return (state.width*state.height+1 - state.moves)/2;
     }
 
@@ -70,11 +71,11 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  PlayerData
     ++expanded;
     score = numeric_limits<int>::min();
     // generando movimientos validos
-    vector<state_t> child_states = child_vector(state, player1);
+    vector<state_t> child_states = child_vector(state, players.turn(turn));
     
     for (state_t child : child_states) 
     {
-        score = -negamax_alphabeta(child, depth - 1, -beta, -alpha, player2, player1);
+        score = -negamax_alphabeta(child, depth - 1, -beta, -alpha, players, -turn);
         if(score >= beta) return score;  
         if(score > alpha) alpha = score; 
     }
@@ -135,19 +136,64 @@ Node best_child(Node node, float factor)
     return bestChildren[choice];
 }
 
-pair<Node, PlayerData> tree_policy(Node node, PlayerData player, float factor)
+struct NT
 {
-    // Hacer cuando cambiemos PlayerData por algo mas usable
+	Node n;
+	int t;
+};
+
+NT tree_policy(Node node, Players players, int turn, float factor)
+{
+    while (!node.state.CheckDraw() && node.state.GetWinner(players) == 0)
+    {
+        if (!node.FullyExplored())
+        {
+            NT r = {expand(node, players.turn(turn)), -turn};
+            return r;
+        }
+        else
+        {
+            node = best_child(node, factor);
+            turn = -turn;
+        }
+    }
+    NT r = {node, turn};
+    return r;
 }
 
-/* Hacer cuando cambiemos PlayerData por algo mas usable
- * ?? default_policy(state_t state, player) 
- * {
- *  
- * }
- * 
- * void backup(Node node, float reward, player)
- * {
- * 
- * }
- */
+float default_policy(state_t state, Players players, int turn) 
+{
+    while (!state.CheckDraw() && state.GetWinner(players))
+    {
+        state = state.RandMove(players.turn(turn));
+        turn = -turn;
+    }
+    return state.GetWinner(players);
+}
+
+void backup(Node node, float reward, Players players, int turn)
+{
+    while (true)
+    {
+        node.visits++;
+        node.reward -= turn * reward;
+        turn = -turn;
+        if (node.parent == nullptr)
+        {
+            break;
+        }
+        node = *node.parent;
+    }
+}
+
+Node MCTS(int max_iter, Node root, float factor, Players players)
+{
+    for (int i = 0; i < max_iter; i++)
+    {
+        NT r = tree_policy(root, players, 1, factor);
+        float reward = default_policy(r.n.state, players, r.t);
+        backup(r.n, reward, players, r.t);
+    }
+    
+    return best_child(root, 0);
+}

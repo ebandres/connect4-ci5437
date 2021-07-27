@@ -13,6 +13,7 @@ int main()
 	int full;
 	int trueWidth = 7;
 	int trueLength = 6;
+	int turn = 1;
 
 	cout << "Welcome to Connect 4" << endl
 		 << endl;
@@ -24,10 +25,12 @@ int main()
 	strcpy(playerTwo.playerName, "PlayerTwo");
 	playerTwo.playerPiece = 'X';
 
-	FillBoard(b, "32751571231557", playerOne, playerTwo);
+	Players players(playerOne, playerTwo);
+
+	FillBoard(b, "32751571231557", players, turn);
 	b.BoardPrint();
 
-	int value = negamax_alphabeta(b, 15, -1, 1, playerOne, playerTwo);
+	int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
 	cout << value << endl;
 }
 	// centinelas de tablero.

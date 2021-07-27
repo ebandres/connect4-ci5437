@@ -15,18 +15,45 @@ struct PlayerData
 	char playerPiece;
 };
 
-static int columnOrder[] = {4,3,5,2,6,1,7};
+struct Players
+{
+	PlayerData player1;
+	PlayerData player2;
+
+	Players(PlayerData p1, PlayerData p2);
+
+	PlayerData turn(int t);
+};
+
+Players::Players(PlayerData p1, PlayerData p2)
+{
+	player1 = p1;
+	player2 = p2;
+}
+
+PlayerData Players::turn(int t)
+{
+	if (t > 0)
+	{
+		return player1;
+	}
+	return player2;
+}
+
+static int columnOrder[] = {4, 3, 5, 2, 6, 1, 7};
 
 class state_t
 {
 public:
 	static const int width = 7;
 	static const int height = 6;
-	static const int min_score = -(width*height)/2 + 3;
-    static const int max_score = (width*height+1)/2 - 3;
+	static const int min_score = -(width * height) / 2 + 3;
+	static const int max_score = (width * height + 1) / 2 - 3;
 	char board[9][10];
 	int free_slots[width] = {6, 6, 6, 6, 6, 6, 6};
 	unsigned int moves = 0;
+	uint64_t current_position = 0;
+	uint64_t mask = 0;
 
 	int PlayerTurn(PlayerData activePlayer);
 	state_t MakeMove(PlayerData activePlayer, int columnChoice);
@@ -34,6 +61,7 @@ public:
 	bool CheckDown(int columnChoice);
 	void BoardPrint(void);
 	bool CheckWinner(PlayerData activePlayer);
+	int GetWinner(Players players);
 	bool CheckDraw(void);
 	vector<int> GetPossibleMoves(void);
 	uint64_t bottom_mask(int col);
@@ -64,7 +92,7 @@ int state_t::PlayerTurn(PlayerData activePlayer)
 	return columnChoice;
 }
 
-state_t state_t::MakeMove(PlayerData activePlayer, int columnChoice) 
+state_t state_t::MakeMove(PlayerData activePlayer, int columnChoice)
 {
 	state_t s(*this);
 	s.board[free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
@@ -86,7 +114,7 @@ state_t state_t::RandMove(PlayerData activePlayer)
 		int col = experimental::randint(0, size - 1);
 		s = s.MakeMove(activePlayer, pm[col]);
 	}
-	
+
 	return s;
 }
 
@@ -181,13 +209,22 @@ bool state_t::CheckWinner(PlayerData activePlayer)
 	return false;
 }
 
+int state_t::GetWinner(Players players)
+{
+	if (CheckWinner(players.player1))
+	{
+		return 1;
+	}
+	else if (CheckWinner(players.player2))
+	{
+		return -1;
+	}
+	return 0;
+}
+
 bool state_t::CheckDraw(void)
 {
-	if (moves == 42) {
-		return true;
-	} else {
-		return false;
-	}
+	return moves == 42;
 }
 
 vector<int> state_t::GetPossibleMoves(void)
@@ -200,19 +237,23 @@ vector<int> state_t::GetPossibleMoves(void)
 			possible_moves.push_back(i + 1);
 		}
 	}
+	return possible_moves;
 }
 
-uint64_t state_t::bottom_mask(int col) {
-    return UINT64_C(1) << col*(height+1);
- }
+uint64_t state_t::bottom_mask(int col)
+{
+	return UINT64_C(1) << col * (height + 1);
+}
 
-void state_t::bit_play(int col) {
+void state_t::bit_play(int col)
+{
 	current_position ^= mask;
 	mask |= mask + bottom_mask(col);
 }
 
-uint64_t state_t::key() {
-return current_position + mask;
+uint64_t state_t::key()
+{
+	return current_position + mask;
 }
 
 void WinnerMessage(PlayerData activePlayer)
@@ -228,20 +269,30 @@ public:
 	int visits = 1;
 	float reward = 0.0;
 	state_t state;
-	Node* parent;
+	Node *parent = nullptr;
 	vector<Node> children;
 	vector<int> children_move;
 
+	//Node(Node *n);
 	Node(state_t s);
 	Node(state_t s, Node *p);
 
 	void AddChild(state_t child, int col);
 	void Update(float r);
 	bool FullyExplored(void);
-
 };
+/*
+Node::Node(Node *n)
+{
+	visits = n->visits;
+	reward = n->reward;
+	state = n->state;
+	parent = n->parent;
+	children = n->children;
+	children_move = n->children_move;
+}*/
 
-Node::Node(state_t s) 
+Node::Node(state_t s)
 {
 	state = s;
 }
@@ -270,21 +321,26 @@ bool Node::FullyExplored(void)
 	return children.size() == state.GetPossibleMoves().size();
 }
 
-void FillBoard(state_t &state, string seq, PlayerData player1, PlayerData player2) 
+void FillBoard(state_t &state, string seq, Players p, int &turn)
 {
-PlayerData player;
-for(unsigned int i = 0; i < seq.size(); i++) {
-	int col = seq[i] - '1'; 
-	col++;
+	PlayerData player;
+	for (unsigned int i = 0; i < seq.size(); i++)
+	{
+		int col = seq[i] - '1';
+		col++;
 
+		player = p.turn(turn);
+		turn = -turn;
+		/*
 	if (state.moves % 2 == 0) {
 		player = player1;
 	} else {
 		player = player2;
 	}
+	*/
 
-	state = state.MakeMove(player, col);
-}
+		state = state.MakeMove(player, col);
+	}
 }
 
 #endif

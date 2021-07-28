@@ -15,7 +15,8 @@ unsigned expanded = 0;
 unsigned generated = 0;
 TranspositionTable TTable(8388593);
 
-vector<state_t> child_vector(state_t state, PlayerData player) {
+vector<state_t> child_vector(state_t state, PlayerData player)
+{
     vector<state_t> movement;
     state_t new_state;
 
@@ -31,11 +32,14 @@ vector<state_t> child_vector(state_t state, PlayerData player) {
     return movement;
 }
 
-bool check_children(state_t state, PlayerData player) {
+bool check_children(state_t state, PlayerData player)
+{
     vector<state_t> children = child_vector(state, player);
 
-    for (state_t child : children) {
-        if (child.CheckWinner(player)) {
+    for (state_t child : children)
+    {
+        if (child.CheckWinner(player))
+        {
             return true;
         }
     }
@@ -43,55 +47,62 @@ bool check_children(state_t state, PlayerData player) {
     return false;
 }
 
-int negamax_alphabeta(state_t state, int depth, int alpha, int beta,  Players players, int turn){
-    
+int negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players players, int turn)
+{
+
     //check_time(st);
     int score;
     ++generated;
 
-    if (state.CheckDraw()) 
+    if (state.CheckDraw())
     {
         return 0;
     }
 
-    if (check_children(state, players.turn(turn))) {
-        return (state.width*state.height+1 - state.moves)/2;
+    if (check_children(state, players.turn(turn)))
+    {
+        //cout << "retorna aqui" << endl;
+        return (state.width * state.height + 1 - state.moves) / 2;
     }
 
-    int max = (state.width*state.height-1 - state.moves)/2;	
-    if(int info = TTable.get(state.key()))
-    max = info + state.min_score - 1;
+    int max = (state.width * state.height - 1 - state.moves) / 2;
+    if (int info = TTable.get(state.key()))
+        max = info + state.min_score - 1;
 
-    if(beta > max) {
-    beta = max;                     
-    if(alpha >= beta) return beta;  
+    if (beta > max)
+    {
+        beta = max;
+        if (alpha >= beta)
+            return beta;
     }
 
     // si no es estado terminal, expande
     ++expanded;
-    score = numeric_limits<int>::min();
+    score = numeric_limits<int>::lowest();
     // generando movimientos validos
     vector<state_t> child_states = child_vector(state, players.turn(turn));
-    
-    for (state_t child : child_states) 
+
+    for (state_t child : child_states)
     {
         score = -negamax_alphabeta(child, depth - 1, -beta, -alpha, players, -turn);
-        if(score >= beta) return score;  
-        if(score > alpha) alpha = score; 
+        if (score >= beta)
+            return score;
+        if (score > alpha)
+            alpha = score;
     }
 
     TTable.put(state.key(), alpha - state.min_score + 1);
-
+    //cout << "ret final" << endl;
     return alpha;
 };
 
 // Monte Carlo Tree Search
 
-Node expand(Node node, PlayerData player)
+Node *expand(Node *node, PlayerData player)
 {
-    vector<int> tried_moves = node.children_move;
-    vector<int> possible_moves = node.state.GetPossibleMoves();
-    state_t s(node.state);
+    vector<int> tried_moves = node->children_move;
+    vector<int> possible_moves = node->state.GetPossibleMoves();
+    state_t s(node->state);
     int col;
     for (int i = 0; i < possible_moves.size(); i++)
     {
@@ -101,69 +112,71 @@ Node expand(Node node, PlayerData player)
             s = s.MakeMove(player, possible_moves[i]);
             break;
         }
-        
     }
+    node->AddChild(s, col);
 
-    node.AddChild(s, col);
-    return node.children[node.children.size() - 1];
+    return node->children[node->children.size() - 1];
 }
 
-Node best_child(Node node, float factor)
+Node *best_child(Node *node, float factor)
 {
-    float bestScore = numeric_limits<float>::min();
-    vector<Node> bestChildren;
-
-    for (int i = 0; i < node.children.size(); i++)
+    float bestScore = numeric_limits<float>::lowest();
+    //float bestScore = -1000000;
+    vector<Node *> bestChildren;
+    for (int i = 0; i < node->children.size(); i++)
     {
-        float f = node.children[i].reward / node.children[i].visits;
-        float g = sqrt(log(2 * node.visits) / node.children[i].visits);
+        float f = node->children[i]->reward / node->children[i]->visits;
+        float g = sqrt(log(2 * node->visits) / node->children[i]->visits);
         float score = f + factor * g;
 
         if (score == bestScore)
         {
-            bestChildren.push_back(node.children[i]);
+            bestChildren.push_back(node->children[i]);
         }
         else if (score > bestScore)
         {
             bestChildren.clear();
-            bestChildren.push_back(node.children[i]);
+            bestChildren.push_back(node->children[i]);
             bestScore = score;
         }
     }
-    
-	int size = static_cast<int>(bestChildren.size());
+    int size = static_cast<int>(bestChildren.size());
     int choice = experimental::randint(0, size - 1);
+    Node *c = bestChildren[choice];
     return bestChildren[choice];
 }
 
 struct NT
 {
-	Node n;
-	int t;
+    Node *n;
+    int t;
 };
 
-NT tree_policy(Node node, Players players, int turn, float factor)
+NT tree_policy(Node *node, Players players, int turn, float factor)
 {
-    while (!node.state.CheckDraw() && node.state.GetWinner(players) == 0)
+    Node *tmp(node);
+    while (!tmp->state.CheckDraw() && tmp->state.GetWinner(players) == 0)
     {
-        if (!node.FullyExplored())
+        //tmp->state.BoardPrint();
+        if (!tmp->FullyExplored())
         {
-            NT r = {expand(node, players.turn(turn)), -turn};
+            tmp = expand(tmp, players.turn(turn));
+            NT r = {tmp, -turn};
             return r;
         }
         else
         {
-            node = best_child(node, factor);
+            tmp = best_child(tmp, factor);
             turn = -turn;
         }
     }
-    NT r = {node, turn};
+    NT r = {tmp, turn};
     return r;
 }
 
-float default_policy(state_t state, Players players, int turn) 
+float default_policy(state_t state, Players players, int turn)
 {
-    while (!state.CheckDraw() && state.GetWinner(players))
+    while (!state.CheckDraw() && state.GetWinner(players) == 0)
     {
         state = state.RandMove(players.turn(turn));
         turn = -turn;
@@ -171,29 +184,34 @@ float default_policy(state_t state, Players players, int turn)
     return state.GetWinner(players);
 }
 
-void backup(Node node, float reward, Players players, int turn)
+void backup(Node *node, float reward, Players players, int turn)
 {
     while (true)
     {
-        node.visits++;
-        node.reward -= turn * reward;
+        node->visits++;
+        node->reward -= turn * reward;
         turn = -turn;
-        if (node.parent == nullptr)
+        if (node->is_root)
         {
             break;
         }
-        node = *node.parent;
+
+        node = node->parent;
+        break;
     }
 }
 
-Node MCTS(int max_iter, Node root, float factor, Players players)
+Node MCTS(int max_iter, Node *root, float factor, Players players, int turn)
 {
     for (int i = 0; i < max_iter; i++)
     {
-        NT r = tree_policy(root, players, 1, factor);
-        float reward = default_policy(r.n.state, players, r.t);
+        //cout << "iter " << i << endl;
+        NT r = tree_policy(root, players, turn, factor);
+        //cout << "tp" << endl;
+        float reward = default_policy(r.n->state, players, r.t);
+        //cout << "dp" << endl;
         backup(r.n, reward, players, r.t);
+        //cout << "bu" << endl;
     }
-    
-    return best_child(root, 0);
+    return *best_child(root, 0);
 }

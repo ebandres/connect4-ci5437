@@ -49,8 +49,16 @@ public:
 	static const int height = 6;
 	static const int min_score = -(width * height) / 2 + 3;
 	static const int max_score = (width * height + 1) / 2 - 3;
-	char board[9][10];
-	int free_slots[width] = {6, 6, 6, 6, 6, 6, 6};
+	string board[10] = {"         ",
+						"         ",
+						"         ",
+						"         ",
+						"         ",
+						"         ",
+						"         ",
+						"         ",
+						"         "};
+	vector<int> free_slots{6, 6, 6, 6, 6, 6, 6};
 	unsigned int moves = 0;
 	uint64_t current_position = 0;
 	uint64_t mask = 0;
@@ -95,10 +103,10 @@ int state_t::PlayerTurn(PlayerData activePlayer)
 state_t state_t::MakeMove(PlayerData activePlayer, int columnChoice)
 {
 	state_t s(*this);
-	s.board[free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
+	
+	s.board[s.free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
 	s.free_slots[columnChoice - 1]--;
 	s.moves++;
-
 	return s;
 }
 
@@ -114,7 +122,6 @@ state_t state_t::RandMove(PlayerData activePlayer)
 		int col = experimental::randint(0, size - 1);
 		s = s.MakeMove(activePlayer, pm[col]);
 	}
-
 	return s;
 }
 
@@ -269,11 +276,12 @@ public:
 	int visits = 1;
 	float reward = 0.0;
 	state_t state;
-	Node *parent = nullptr;
-	vector<Node> children;
+	Node *parent;
+	vector<Node*> children;
 	vector<int> children_move;
+	bool is_root = false;
 
-	//Node(Node *n);
+	Node(Node *n);
 	Node(state_t s);
 	Node(state_t s, Node *p);
 
@@ -281,7 +289,7 @@ public:
 	void Update(float r);
 	bool FullyExplored(void);
 };
-/*
+
 Node::Node(Node *n)
 {
 	visits = n->visits;
@@ -290,7 +298,7 @@ Node::Node(Node *n)
 	parent = n->parent;
 	children = n->children;
 	children_move = n->children_move;
-}*/
+}
 
 Node::Node(state_t s)
 {
@@ -305,7 +313,7 @@ Node::Node(state_t s, Node *p)
 
 void Node::AddChild(state_t child, int col)
 {
-	Node new_child(child, this);
+	Node *new_child = new Node(child, this);
 	children.push_back(new_child);
 	children_move.push_back(col);
 }

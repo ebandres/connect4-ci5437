@@ -20,18 +20,38 @@ int main()
 
 	// inicializo dos jugadores, y su tipo de ficha unica.
 	strcpy(playerOne.playerName, "PlayerOne");
-	playerOne.playerPiece = 'O';
+	playerOne.playerPiece = 'X';
 
 	strcpy(playerTwo.playerName, "PlayerTwo");
-	playerTwo.playerPiece = 'X';
+	playerTwo.playerPiece = 'O';
 
 	Players players(playerOne, playerTwo);
 
 	FillBoard(b, "32751571231557", players, turn);
+	//FillBoard(b, "123", players, turn);
 	b.BoardPrint();
 
-	int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
-	cout << value << endl;
+	//int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
+	//cout << value << endl;
+
+	int iters = 5000;
+	Node root(b);
+	root.is_root = true;
+	Node result = MCTS(iters, &root, 2.0, players, turn);
+	while (true)
+	{
+		if (result.state.CheckDraw() || result.state.GetWinner(players) != 0)
+		{
+			break;
+		}
+		result = MCTS(iters, &result, 2.0, players, turn);
+	}
+	
+	
+	cout << "DONE?" << endl;
+	result.state.BoardPrint();
+	cout << "WINNER: " << players.turn(result.state.GetWinner(players)).playerPiece << endl;
+		
 }
 	// centinelas de tablero.
 // 	full = 0;

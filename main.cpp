@@ -1,6 +1,8 @@
 #include "algoritmos.hpp"
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
 int main()
 {
@@ -32,6 +34,7 @@ int main()
 	//FillBoard(b, "123", players, turn);
 	
 	b.BoardPrint();
+    time_point<high_resolution_clock> start_time = high_resolution_clock::now();
 
 	//pair<state_t, int> nega = negamax_alphabeta(b, 15, -1, 1, players, turn);
 	//cout << nega.second << endl;
@@ -80,6 +83,10 @@ int main()
 	{
 		cout << "DRAW" << endl;
 	}
+
+    duration<double> elapsed_time = high_resolution_clock::now() - start_time;
+	cout << "Time: " << elapsed_time.count() << " seconds" << endl;
+
 	
 	
 	// 	cout << "REVERSING THROUGH ---------" << endl;

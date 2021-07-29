@@ -159,7 +159,7 @@ struct NT
     int t;
 };
 
-NT tree_policy(Node *node, Players players, int &turn, float factor)
+NT selection(Node *node, Players players, int &turn, float factor)
 {
     Node *tmp(node);
     while (!tmp->state.CheckDraw() && tmp->state.GetWinner(players) == 0)
@@ -181,7 +181,7 @@ NT tree_policy(Node *node, Players players, int &turn, float factor)
     return r;
 }
 
-float default_policy(state_t state, Players players, int &turn)
+float simulation(state_t state, Players players, int &turn)
 {
     while (!state.CheckDraw() && state.GetWinner(players) == 0)
     {
@@ -191,7 +191,7 @@ float default_policy(state_t state, Players players, int &turn)
     return state.GetWinner(players);
 }
 
-void backup(Node *node, float reward, Players players, int &turn)
+void backpropagation(Node *node, float reward, Players players, int &turn)
 {
     while (true)
     {
@@ -212,11 +212,11 @@ Node MCTS(int max_iter, Node *root, float factor, Players players, int &turn)
     for (int i = 0; i < max_iter; i++)
     {
         //cout << "iter " << i << endl;
-        NT r = tree_policy(root, players, turn, factor);
+        NT r = selection(root, players, turn, factor);
         //cout << "tp" << endl;
-        float reward = default_policy(r.n->state, players, r.t);
+        float reward = simulation(r.n->state, players, r.t);
         //cout << "dp" << endl;
-        backup(r.n, reward, players, r.t);
+        backpropagation(r.n, reward, players, r.t);
         //cout << "bu" << endl;
     }
     return *best_child(root, 0);

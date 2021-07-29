@@ -6,7 +6,8 @@ int main()
 {
 	PlayerData playerOne, playerTwo;
 	state_t b;
-	state_t next_move;
+	pair<state_t, int> nega;
+	
 
 	int columnChoice;
 	int win;
@@ -27,40 +28,55 @@ int main()
 
 	Players players(playerOne, playerTwo);
 
-	FillBoard(b, "6323454652623215", players, turn);
+	FillBoard(b, "6223121131332157157", players, turn);
 	//FillBoard(b, "123", players, turn);
+	
 	b.BoardPrint();
 
-	int value = (negamax_alphabeta(b, 15, -1, 1, players, turn)).second;
-	cout << value << endl;
+	//pair<state_t, int> nega = negamax_alphabeta(b, 15, -1, 1, players, turn);
+	//cout << nega.second << endl;
 	//exit(0);
 	int iters = 5000;
 	float factor = 1;
 	Node root(b);
+	//Node result;
 	root.is_root = true;
-	Node result = MCTS(iters, &root, factor, players, turn);
+	pair<state_t, Node> next_move = {b, root};
+	//Node result = MCTS(iters, &root, factor, players, turn);
 	while (true)
 	{
-		if (result.state.CheckDraw() || result.state.GetWinner(players) != 0)
-		{
-			break;
+		next_move.first.BoardPrint();
+		if (next_move.first.CheckDraw() || next_move.first.GetWinner(players) != 0) break;
+
+		if (turn == 1) {
+
+			Node result = MCTS(iters, &(next_move.second), factor, players, turn);
+			next_move  = {result.state, result};
+			turn = -1;
+
+		} else {
+
+			nega = negamax_alphabeta(next_move.first, 15, -1, 1, players, turn);
+			Node root(nega.first);
+			root.is_root = true;
+			next_move = {nega.first, root};
+			turn = 1;
 		}
-		result = MCTS(iters, &result, factor, players, turn);
+
 	}
 	
-	
 	cout << "DONE?" << endl;
-	result.state.BoardPrint();
-	int winner = result.state.GetWinner(players);
+	next_move.first.BoardPrint();
+	int winner = next_move.first.GetWinner(players);
 	if (winner == 1)
 	{
-		cout << "WINNER: X" << endl;
+		cout << "WINNER: MTCS X" << endl;
 	}
 	else if (winner == -1)
 	{
-		cout << "WINNER: O" << endl;
+		cout << "WINNER: NEGAMAX O" << endl;
 	}
-	else if (result.state.CheckDraw())
+	else if (next_move.first.CheckDraw())
 	{
 		cout << "DRAW" << endl;
 	}

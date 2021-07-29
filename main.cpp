@@ -31,20 +31,21 @@ int main()
 	//FillBoard(b, "123", players, turn);
 	b.BoardPrint();
 
-	//int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
-	//cout << value << endl;
-
+	int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
+	cout << value << endl;
+	exit(0);
 	int iters = 5000;
+	float factor = 1;
 	Node root(b);
 	root.is_root = true;
-	Node result = MCTS(iters, &root, 2.0, players, turn);
+	Node result = MCTS(iters, &root, factor, players, turn);
 	while (true)
 	{
 		if (result.state.CheckDraw() || result.state.GetWinner(players) != 0)
 		{
 			break;
 		}
-		result = MCTS(iters, &result, 2.0, players, turn);
+		result = MCTS(iters, &result, factor, players, turn);
 	}
 	
 	

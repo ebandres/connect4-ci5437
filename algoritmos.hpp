@@ -197,7 +197,6 @@ void backup(Node *node, float reward, Players players, int turn)
         }
 
         node = node->parent;
-        break;
     }
 }
 

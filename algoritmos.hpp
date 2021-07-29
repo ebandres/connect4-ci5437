@@ -59,7 +59,7 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players pla
         return 0;
     }
 
-    if (check_children(state, players.turn(turn)))
+    if (check_children(state, players.turn(state.moves)))
     {
         //cout << "retorna aqui" << endl;
         return (state.width * state.height + 1 - state.moves) / 2;
@@ -80,7 +80,7 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players pla
     ++expanded;
     score = numeric_limits<int>::lowest();
     // generando movimientos validos
-    vector<state_t> child_states = child_vector(state, players.turn(turn));
+    vector<state_t> child_states = child_vector(state, players.turn(state.moves));
 
     for (state_t child : child_states)
     {
@@ -152,7 +152,7 @@ struct NT
     int t;
 };
 
-NT tree_policy(Node *node, Players players, int turn, float factor)
+NT tree_policy(Node *node, Players players, int &turn, float factor)
 {
     Node *tmp(node);
     while (!tmp->state.CheckDraw() && tmp->state.GetWinner(players) == 0)
@@ -160,7 +160,7 @@ NT tree_policy(Node *node, Players players, int turn, float factor)
         //tmp->state.BoardPrint();
         if (!tmp->FullyExplored())
         {
-            tmp = expand(tmp, players.turn(turn));
+            tmp = expand(tmp, players.turn(tmp->state.moves));
             NT r = {tmp, -turn};
             return r;
         }
@@ -174,17 +174,17 @@ NT tree_policy(Node *node, Players players, int turn, float factor)
     return r;
 }
 
-float default_policy(state_t state, Players players, int turn)
+float default_policy(state_t state, Players players, int &turn)
 {
     while (!state.CheckDraw() && state.GetWinner(players) == 0)
     {
-        state = state.RandMove(players.turn(turn));
+        state = state.RandMove(players.turn(state.moves));
         turn = -turn;
     }
     return state.GetWinner(players);
 }
 
-void backup(Node *node, float reward, Players players, int turn)
+void backup(Node *node, float reward, Players players, int &turn)
 {
     while (true)
     {
@@ -200,7 +200,7 @@ void backup(Node *node, float reward, Players players, int turn)
     }
 }
 
-Node MCTS(int max_iter, Node *root, float factor, Players players, int turn)
+Node MCTS(int max_iter, Node *root, float factor, Players players, int &turn)
 {
     for (int i = 0; i < max_iter; i++)
     {

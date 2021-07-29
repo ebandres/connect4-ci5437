@@ -33,7 +33,7 @@ Players::Players(PlayerData p1, PlayerData p2)
 
 PlayerData Players::turn(int t)
 {
-	if (t > 0)
+	if (t % 2 == 0)
 	{
 		return player1;
 	}
@@ -337,7 +337,7 @@ void FillBoard(state_t &state, string seq, Players p, int &turn)
 		int col = seq[i] - '1';
 		col++;
 
-		player = p.turn(turn);
+		player = p.turn(state.moves);
 		turn = -turn;
 		/*
 	if (state.moves % 2 == 0) {

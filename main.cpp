@@ -27,13 +27,13 @@ int main()
 
 	Players players(playerOne, playerTwo);
 
-	FillBoard(b, "32751571231557", players, turn);
+	//FillBoard(b, "32751571231557", players, turn);
 	//FillBoard(b, "123", players, turn);
 	b.BoardPrint();
 
-	int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
-	cout << value << endl;
-	exit(0);
+	//int value = negamax_alphabeta(b, 15, -1, 1, players, turn);
+	//cout << value << endl;
+	//exit(0);
 	int iters = 5000;
 	float factor = 1;
 	Node root(b);
@@ -51,7 +51,29 @@ int main()
 	
 	cout << "DONE?" << endl;
 	result.state.BoardPrint();
-	cout << "WINNER: " << players.turn(result.state.GetWinner(players)).playerPiece << endl;
+	int winner = result.state.GetWinner(players);
+	if (winner == 1)
+	{
+		cout << "WINNER: X" << endl;
+	}
+	else if (winner == -1)
+	{
+		cout << "WINNER: O" << endl;
+	}
+	else if (result.state.CheckDraw())
+	{
+		cout << "DRAW" << endl;
+	}
+	
+	
+		cout << "REVERSING THROUGH ---------" << endl;
+	Node *p = &result;
+	do
+	{
+		p->state.BoardPrint();
+		p = p->parent;
+	} while (!p->is_root);
+	
 		
 }
 	// centinelas de tablero.

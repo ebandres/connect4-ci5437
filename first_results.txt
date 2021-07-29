@@ -1,0 +1,121 @@
+WIP Results:
+MCTS w/ 3000 iters
+
+Initial state: 274552224131661
+MCTS First Move Time: 0.231851 seconds
+Negamax First Move Time: 47.1581 seconds
+
+Initial state: 5455174361263362
+MCTS First Move Time: 0.218753 seconds
+Negamax First Move Time: 7.59044 seconds
+
+Initial state: 2531276566711153
+MCTS First Move Time: 0.293355 seconds
+Negamax First Move Time: 156.559 seconds
+
+Initial state: 37313333717124171162542
+MCTS First Move Time: 0.20787 seconds
+Negamax First Move Time: 0.0300476 seconds
+
+Initial state: 6614446666373154
+MCTS First Move Time: 0.270649 seconds
+Negamax First Move Time: 0.0802665 seconds
+Welcome to Connect 4
+
+Initial state: 24617524315172127
+MCTS First Move Time: 0.263709 seconds
+Negamax First Move Time: 2.2291 seconds
+Welcome to Connect 4
+
+Initial state: 6242432155656447531617622
+MCTS First Move Time: 0.239755 seconds
+Negamax First Move Time: 0.162417 seconds
+Welcome to Connect 4
+
+Initial state: 4642332434166445
+MCTS First Move Time: 0.235664 seconds
+Negamax First Move Time: 1.02942 seconds
+Welcome to Connect 4
+
+Initial state: 165713352355467777
+MCTS First Move Time: 0.276409 seconds
+Negamax First Move Time: 24.907 seconds
+Welcome to Connect 4
+
+Initial state: 7441746225252552
+MCTS First Move Time: 0.24247 seconds
+Negamax First Move Time: 2.32199 seconds
+Welcome to Connect 4
+
+Initial state: 7225753363613131156611
+MCTS First Move Time: 0.268769 seconds
+Negamax First Move Time: 2.96956 seconds
+Welcome to Connect 4
+
+Initial state: 246767232112661771721576
+MCTS First Move Time: 0.210519 seconds
+Negamax First Move Time: 0.0181084 seconds
+Welcome to Connect 4
+
+Initial state: 1767235667232175621774455
+MCTS First Move Time: 0.16587 seconds
+Negamax First Move Time: 0.0475783 seconds
+Welcome to Connect 4
+
+Initial state: 6323454652623215
+MCTS First Move Time: 0.271935 seconds
+Negamax First Move Time: 0.274688 seconds
+Welcome to Connect 4
+
+Initial state: 1113222154334225
+MCTS First Move Time: 0.308166 seconds
+Negamax First Move Time: 6.45409 seconds
+
+Initial state: 214644735611711
+MCTS First Move Time: 0.211789 seconds
+Negamax First Move Time: 0.289573 seconds
+Welcome to Connect 4
+
+Initial state: 555317266147361
+MCTS First Move Time: 0.317613 seconds
+Negamax First Move Time: 608.46 seconds
+Welcome to Connect 4
+
+Initial state: 52446155614451175
+MCTS First Move Time: 0.130111 seconds
+Negamax First Move Time: 0.122181 seconds
+Welcome to Connect 4
+
+Initial state: 444712564755311374
+MCTS First Move Time: 0.224996 seconds
+Negamax First Move Time: 1.9555 seconds
+Welcome to Connect 4
+
+Initial state: 27222774542216557563711
+MCTS First Move Time: 0.202184 seconds
+Negamax First Move Time: 0.0129492 seconds
+Welcome to Connect 4
+
+Initial state: 71324677554451437653
+MCTS First Move Time: 0.130416 seconds
+Negamax First Move Time: 0.230001 seconds
+Welcome to Connect 4
+
+Initial state: 25734476675755361223
+MCTS First Move Time: 0.210966 seconds
+Negamax First Move Time: 0.170958 seconds
+Welcome to Connect 4
+
+Initial state: 11175617456367267331
+MCTS First Move Time: 0.20828 seconds
+Negamax First Move Time: 1.28483 seconds
+Welcome to Connect 4
+
+Initial state: 11163142533736577
+MCTS First Move Time: 0.193905 seconds
+Negamax First Move Time: 1.83198 seconds
+Welcome to Connect 4
+
+Initial state: 16633611716233262
+MCTS First Move Time: 0.245078 seconds
+Negamax First Move Time: 1.49349 seconds

@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <limits>
 #include <cmath>
+#include <utility>
 #include <experimental/random>
 #include "class.hpp"
 #include "ttable.hpp"
@@ -32,7 +33,7 @@ vector<state_t> child_vector(state_t state, PlayerData player)
     return movement;
 }
 
-bool check_children(state_t state, PlayerData player)
+pair<state_t, bool> check_children(state_t state, PlayerData player)
 {
     vector<state_t> children = child_vector(state, player);
 
@@ -40,29 +41,32 @@ bool check_children(state_t state, PlayerData player)
     {
         if (child.CheckWinner(player))
         {
-            return true;
+            return {child,true};
         }
     }
 
-    return false;
+    return {state,false};
 }
 
-int negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players players, int turn)
+pair<state_t, int> negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players players, int turn)
 {
-
+    
     //check_time(st);
     int score;
     ++generated;
+    pair<state_t, int> result = {state, alpha};
 
     if (state.CheckDraw())
     {
-        return 0;
+        return {state, 0};
     }
 
-    if (check_children(state, players.turn(state.moves)))
+    pair<state_t, bool> checked_children = check_children(state, players.turn(state.moves));
+
+    if (checked_children.second)
     {
         //cout << "retorna aqui" << endl;
-        return (state.width * state.height + 1 - state.moves) / 2;
+        return {checked_children.first, (state.width * state.height + 1 - state.moves) / 2};
     }
 
     int max = (state.width * state.height - 1 - state.moves) / 2;
@@ -73,7 +77,7 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players pla
     {
         beta = max;
         if (alpha >= beta)
-            return beta;
+            return {state, beta};
     }
 
     // si no es estado terminal, expande
@@ -84,16 +88,19 @@ int negamax_alphabeta(state_t state, int depth, int alpha, int beta, Players pla
 
     for (state_t child : child_states)
     {
-        score = -negamax_alphabeta(child, depth - 1, -beta, -alpha, players, -turn);
-        if (score >= beta)
-            return score;
-        if (score > alpha)
+        score = -(negamax_alphabeta(child, depth - 1, -beta, -alpha, players, -turn)).second;
+        if (score >= beta) return {child, score};
+        if (score > alpha) {
             alpha = score;
+            result = {child, alpha};
+        }
+
     }
 
     TTable.put(state.key(), alpha - state.min_score + 1);
+
     //cout << "ret final" << endl;
-    return alpha;
+    return result;
 };
 
 // Monte Carlo Tree Search

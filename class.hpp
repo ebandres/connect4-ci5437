@@ -106,6 +106,7 @@ state_t state_t::MakeMove(PlayerData activePlayer, int columnChoice)
 	
 	s.board[s.free_slots[columnChoice - 1]][columnChoice] = activePlayer.playerPiece;
 	s.free_slots[columnChoice - 1]--;
+	s.bit_play(columnChoice - 1);
 	s.moves++;
 	return s;
 }

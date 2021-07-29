@@ -56,6 +56,10 @@ pair<state_t, int> negamax_alphabeta(state_t state, int depth, int alpha, int be
     ++generated;
     pair<state_t, int> result = {state, alpha};
 
+    if (depth == 15) {
+        TTable.reset();
+    }
+
     if (state.CheckDraw())
     {
         return {state, 0};
@@ -70,14 +74,16 @@ pair<state_t, int> negamax_alphabeta(state_t state, int depth, int alpha, int be
     }
 
     int max = (state.width * state.height - 1 - state.moves) / 2;
-    if (int info = TTable.get(state.key()))
+    if (int info = TTable.get(state.key())) {
         max = info + state.min_score - 1;
+    }
 
     if (beta > max)
     {
         beta = max;
-        if (alpha >= beta)
+        if (alpha >= beta) {
             return {state, beta};
+        }
     }
 
     // si no es estado terminal, expande

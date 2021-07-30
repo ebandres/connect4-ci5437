@@ -1,4 +1,4 @@
-WIP Results:
+First Move Results:
 MCTS w/ 3000 iters
 
 Initial state: 274552224131661

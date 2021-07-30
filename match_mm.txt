@@ -1,0 +1,103 @@
+Complete Match Results:
+MCTS VS MCTS
+
+
+Initial state: 274552224131661
+WINNER: MCTS 2 O
+Time: 8.6958 seconds
+
+Initial state: 5455174361263362
+WINNER: MCTS 2 O
+Time: 7.13661 seconds
+
+Initial state: 2531276566711153
+WINNER: MCTS 2 O
+Time: 2.08569 seconds
+
+Initial state: 37313333717124171162542
+WINNER: MCTS 2 O
+Time: 1.63016 seconds
+
+Initial state: 6614446666373154
+WINNER: MCTS 2 O
+Time: 2.66128 seconds
+
+Initial state: 24617524315172127
+WINNER: MCTS 2 O
+Time: 2.62979 seconds
+
+Initial state: 6242432155656447531617622
+WINNER: MCTS 2 O
+Time: 3.71095 seconds
+
+Initial state: 4642332434166445
+WINNER: MCTS 2 O
+Time: 2.12468 seconds
+
+Initial state: 165713352355467777
+DRAW
+Time: 7.23718 seconds
+
+Initial state: 7441746225252552
+WINNER: MCTS 2 O
+Time: 4.73004 seconds
+
+Initial state: 7225753363613131156611
+WINNER: MCTS 2 O
+Time: 4.3756 seconds
+
+Initial state: 246767232112661771721576
+WINNER: MCTS 2 O
+Time: 3.52538 seconds
+
+Initial state: 1767235667232175621774455
+WINNER: MCTS 1 X
+Time: 2.17921 seconds
+
+Initial state: 6323454652623215
+WINNER: MCTS 1 X
+Time: 4.51579 seconds
+
+Initial state: 1113222154334225
+WINNER: MCTS 2 O
+Time: 6.96284 seconds
+
+Initial state: 214644735611711
+WINNER: MCTS 1 X
+Time: 5.76451 seconds
+
+Initial state: 555317266147361
+WINNER: MCTS 2 O
+Time: 2.89732 seconds
+
+Initial state: 52446155614451175
+WINNER: MCTS 2 O
+Time: 1.07392 seconds
+
+Initial state: 444712564755311374
+WINNER: MCTS 1 X
+Time: 1.80073 seconds
+
+Initial state: 27222774542216557563711
+WINNER: MCTS 2 O
+Time: 1.00306 seconds
+
+Initial state: 71324677554451437653
+DRAW
+Time: 6.06586 seconds
+
+Initial state: 25734476675755361223
+WINNER: MCTS 2 O
+Time: 3.17899 seconds
+
+Initial state: 11175617456367267331
+WINNER: MCTS 1 X
+Time: 1.42328 seconds
+
+Initial state: 11163142533736577
+WINNER: MCTS 2 O
+Time: 1.74971 seconds
+
+Initial state: 16633611716233262
+WINNER: MCTS 1 X
+Time: 5.49832 seconds

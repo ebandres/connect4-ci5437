@@ -34,7 +34,7 @@ int main(int argc, const char **argv)
 
 	Players players(playerOne, playerTwo);
 
-	FillBoard(b, "5465124267522111164", players, turn);
+	FillBoard(b, "24156146661463644533", players, turn);
 	//FillBoard(b, "123", players, turn);
 	
 	b.BoardPrint();
@@ -156,3 +156,6 @@ int main(int argc, const char **argv)
 
     duration<double> elapsed_time = high_resolution_clock::now() - start_time;
 	cout << "Time: " << elapsed_time.count() << " seconds" << endl;
+
+	return 0;
+}
